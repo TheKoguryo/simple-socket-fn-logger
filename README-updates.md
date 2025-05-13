@@ -55,5 +55,5 @@ cd simple-socket-fn-logger
 
 ```
 ./gradlew shadowJar
-java -jar build/libs/simple-socket-fn-logger-1.0.0-all.jar
+java -jar build/libs/simple-socket-fn-logger-1.1.0-all.jar
 ```
