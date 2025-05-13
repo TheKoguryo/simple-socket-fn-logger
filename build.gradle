@@ -18,8 +18,9 @@ repositories {
 }
 
 dependencies {
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'com.github.palindromicity', name: 'simple-syslog-5424', version: '0.0.7'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.18'
+    implementation group: 'com.github.palindromicity', name: 'simple-syslog-5424', version: '0.0.18'
+    implementation group: 'org.fusesource.jansi', name: 'jansi', version: '2.2.0'
 }
 
 task runServer(dependsOn: 'classes', type: JavaExec) {
