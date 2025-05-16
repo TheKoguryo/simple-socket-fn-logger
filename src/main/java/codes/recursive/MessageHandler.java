@@ -30,7 +30,14 @@ public class MessageHandler implements Runnable {
         String incomingMsg;
         try{
             while( (incomingMsg = reader.readLine()) != null ) {
-                Map<String, Object> result = parser.parseLine(incomingMsg);
+                int index = incomingMsg.indexOf(" - ");
+                if (index > 0) {
+                    index += 3;
+                }
+
+                logger.info(incomingMsg.substring(index));
+
+                //Map<String, Object> result = parser.parseLine(incomingMsg);
             /*
                 gives us a nicely formatted Map
                 containing lots of information.
@@ -48,7 +55,7 @@ public class MessageHandler implements Runnable {
                     "syslog.header.severity": "3"
                 }
             */
-                logger.info( result.get("syslog.message").toString() );
+                //logger.info( result.get("syslog.message").toString() );
             }
         }
         catch (IOException e) {
