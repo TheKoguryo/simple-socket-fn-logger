@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class MessageHandler implements Runnable {
     private final Socket clientSocket;
@@ -30,12 +32,17 @@ public class MessageHandler implements Runnable {
         String incomingMsg;
         try{
             while( (incomingMsg = reader.readLine()) != null ) {
-                int index = incomingMsg.indexOf(" - ");
-                if (index > 0) {
-                    index += 3;
-                }
+                //String syslog = "<11>1 2020-06-15T14:46:35Z runner-00001700e5f9 app_id=ocid1.fnapp.oc1.phx...,fn_id=ocid1.fnfunc.oc1.phx... 11 app_id=ocid1.fnapp.oc1.phx...,fn_id=ocid1.fnfunc.oc1.phx... - 01JVJ12A411BT071RZJ000B7EP - root - INFO - Inside Python Hello World function";
+                String regex = "^<(?<priority>\\d|\\d{2}|1[1-8]\\d|19[01])>(?<version>\\d{1,2}) (?<timestamp>\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z) (?<hostname>[\\S]+) (?<appname>\\-|[a-z\\d.\\-=_,]+) (?<msg>.+)";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(incomingMsg);
 
-                logger.info(incomingMsg.substring(index));
+                if (matcher.matches()) {
+                    String timestamp = matcher.group("timestamp");
+                    String hostname = matcher.group("hostname");
+                    String msg = matcher.group("msg");
+                    logger.info(timestamp + " " + hostname + " - " + msg);
+                }
 
                 //Map<String, Object> result = parser.parseLine(incomingMsg);
             /*
