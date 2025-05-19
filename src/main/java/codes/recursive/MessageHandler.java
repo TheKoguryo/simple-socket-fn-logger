@@ -33,15 +33,26 @@ public class MessageHandler implements Runnable {
         try{
             while( (incomingMsg = reader.readLine()) != null ) {
                 //String syslog = "<11>1 2020-06-15T14:46:35Z runner-00001700e5f9 app_id=ocid1.fnapp.oc1.phx...,fn_id=ocid1.fnfunc.oc1.phx... 11 app_id=ocid1.fnapp.oc1.phx...,fn_id=ocid1.fnfunc.oc1.phx... - 01JVJ12A411BT071RZJ000B7EP - root - INFO - Inside Python Hello World function";
-                String regex = "^<(?<priority>\\d|\\d{2}|1[1-8]\\d|19[01])>(?<version>\\d{1,2}) (?<timestamp>\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z) (?<hostname>[\\S]+) (?<appname>\\-|[a-z\\d.\\-=_,]+) (?<msg>.+)";
+
+                //String regex = "^<(?<pri>\\d{1,3})>(?<version>\\d{1,2}) (?<timestamp>[^ ]+) (?<hostName>[^ ]+) (?<appName>[^ ]+) (?<procId>[^ ]+) (?<msgId>[^ ]+) (?<structuredData>(\\-|\\[.*?\\]))(?: (?<msg>.*))?$";
+                String regex = "^<(?<pri>\\d{1,3})>(?<version>\\d{1,2}) (?<timestamp>[^ ]+) (?<hostName>[^ ]+) (?<appName>[^ ]+) (?<procId>[^ ]+) app_id=(?<appId>[^ ]+),fn_id=(?<fnId>[^ ]+) (?<structuredData>(\\-|\\[.*?\\]))(?: (?<msg>.*))?$";
+
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(incomingMsg);
 
                 if (matcher.matches()) {
+                    String pri = matcher.group("pri");
+                    String version = matcher.group("version");
                     String timestamp = matcher.group("timestamp");
-                    String hostname = matcher.group("hostname");
+                    String hostName = matcher.group("hostName");
+                    String appName = matcher.group("appName");
+                    String procId = matcher.group("procId");
+                    //String msgId = matcher.group("msgId");
+                    String fnId = matcher.group("fnId");
+                    String structuredData = matcher.group("structuredData");
                     String msg = matcher.group("msg");
-                    logger.info(timestamp + " " + hostname + " - " + msg);
+
+                    logger.info(timestamp + " " + fnId + " " + msg);
                 }
 
                 //Map<String, Object> result = parser.parseLine(incomingMsg);
